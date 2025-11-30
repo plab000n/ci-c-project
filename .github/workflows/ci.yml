@@ -1,0 +1,44 @@
+name: C CI Pipeline
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: make build
+
+      - name: Test
+        run: make test
+
+      - name: Package
+        run: make package
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: c-artifact
+          path: artifact.tar.gz
+
+  deploy:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: c-artifact
+          path: deploy/
+
+      - name: Simulated Deploy
+        env:
+          DEPLOY_API_KEY: ${{ secrets.DEPLOY_API_KEY }}
+        run: |
+          echo "Deploying with API key: $DEPLOY_API_KEY"
+          echo "Files in artifact:"
+          ls deploy
