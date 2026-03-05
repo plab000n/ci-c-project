@@ -4,6 +4,7 @@
 int main() {
     if (add(5,3) != 8) return 1;
     if (sub(5,3) != 2) return 1;
+    if (mul(5,3) != 15) return 1;
     printf("All tests passed!\n");
     return 0;
 }
